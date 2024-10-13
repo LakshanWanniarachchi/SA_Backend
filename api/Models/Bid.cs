@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System;
+using Microsoft.Extensions.Options;
 
 namespace api.Models
 {
@@ -9,6 +10,10 @@ namespace api.Models
     {
 
 
+
+
+
+        [Key]
         public int BidId { get; set; }
         public int AuctionId { get; set; }
         public String BidderId { get; set; }
@@ -22,5 +27,7 @@ namespace api.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+
     }
 }

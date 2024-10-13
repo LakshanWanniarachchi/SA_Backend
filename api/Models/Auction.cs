@@ -42,11 +42,10 @@ namespace api.Models
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
 
-
         public IdentityUser Seller { get; set; } // Reference to the user
 
 
-
+        public List<Bid> Bids { get; set; }
 
 
 

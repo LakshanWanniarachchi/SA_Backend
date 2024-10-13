@@ -10,8 +10,9 @@ namespace api.Models
     public class Payment
     {
 
-
+        [Key]
         public int PaymentId { get; set; }
+
         public bool IsPaid { get; set; } = false;
         public int BuyerId { get; set; }
         public int SellerId { get; set; }
