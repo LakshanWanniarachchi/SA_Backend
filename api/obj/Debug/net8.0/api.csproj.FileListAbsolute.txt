@@ -173,3 +173,6 @@ C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\bin\Debug\net8.0\Swashbuc
 C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\bin\Debug\net8.0\Castle.Core.dll
 C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Proxies.dll
 C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\obj\Debug\net8.0\api.sourcelink.json
+C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\bin\Debug\net8.0\MailKit.dll
+C:\Users\laksh\OneDrive\Desktop\SA Web Application\api\bin\Debug\net8.0\MimeKit.dll
