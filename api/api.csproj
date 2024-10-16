@@ -19,8 +19,5 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="service.fs" />
-    <Compile Include="Service.fs" />
-  </ItemGroup>
+ 
 </Project>
