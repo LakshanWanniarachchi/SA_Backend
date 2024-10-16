@@ -24,10 +24,49 @@ public class AuctionController : ControllerBase
 
 
     [HttpGet, Authorize]
-    public IActionResult GetAuctions()
+    public async Task<IActionResult> GetAuctions()
     {
-        return Ok(_context.Auctions.Include(c => c.Seller).ToList());
+        var currentTime = DateTime.UtcNow;
+
+        // Fetch all auctions that have expired but are still not marked as "Complete"
+        var expiredAuctions = await _context.Auctions
+            .Where(a => a.EndTime <= currentTime && a.Status != "Complete")
+            .ToListAsync();
+
+        // Update the status of those auctions to "Complete"
+        foreach (var auction in expiredAuctions)
+        {
+            auction.Status = "Complete";
+            auction.UpdatedAt = DateTime.UtcNow;
+        }
+
+        if (expiredAuctions.Any())
+        {
+            // Save the changes to the database only if any auctions were updated
+            await _context.SaveChangesAsync();
+        }
+
+        // Return all auctions (with the updated statuses if any were updated)
+        var auctions = await _context.Auctions
+            .Include(c => c.Seller)
+            .Select(a => new
+            {
+                a.AuctionId,
+                a.Title,
+                a.Description,
+                a.AuctionCategory,
+                a.StartTime,
+                a.EndTime,
+                a.Status,
+                a.WinningBid,
+                a.SellerId,
+                SellerName = a.Seller.UserName,
+                TimeRemaining = a.EndTime - currentTime
+            }).ToListAsync();
+
+        return Ok(auctions);
     }
+
 
     [HttpPost("create"), Authorize]
     public async Task<IActionResult> CreateAuction([FromBody] CreateAuctionDto dto)
@@ -45,10 +84,7 @@ public class AuctionController : ControllerBase
             AuctionImage = dto.AuctionImage,
             AuctionCategory = dto.AuctionCategory,
             SellerId = user.Id,  // Assuming SellerId is an integer
-            StartTime = dto.StartTime,
             EndTime = dto.EndTime,
-            StartingBid = dto.StartingBid,
-            WinningBid = dto.WinningBid,
             Status = dto.Status
         };
 
@@ -57,4 +93,8 @@ public class AuctionController : ControllerBase
 
         return Ok(auction);
     }
+
+
+
+
 }

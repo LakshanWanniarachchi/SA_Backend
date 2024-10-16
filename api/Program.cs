@@ -1,4 +1,6 @@
 using api.Data;
+using api.Service.BackgroundTasks;
+using api.Service.SendMail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -30,6 +32,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+
+// Register your services here
+builder.Services.AddSingleton<MailService>();
+builder.Services.AddHostedService<AuctionBackgroundService>();
 
 
 
