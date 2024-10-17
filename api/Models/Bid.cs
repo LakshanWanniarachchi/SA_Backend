@@ -2,15 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System;
-using Microsoft.Extensions.Options;
+
 
 namespace api.Models
 {
     public class Bid
     {
-
-
-
 
 
         [Key]

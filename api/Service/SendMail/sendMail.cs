@@ -31,7 +31,7 @@ namespace api.Service.SendMail
                     await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
 
                     // Authenticate asynchronously with Gmail
-                    await client.AuthenticateAsync("lakshanlop@gmail.com", ""); // Replace with your actual app password
+                    await client.AuthenticateAsync("lakshanlop@gmail.com", "skld nalp grwi gqzb"); // Replace with your actual app password
 
                     // Send the message asynchronously
                     await client.SendAsync(message);

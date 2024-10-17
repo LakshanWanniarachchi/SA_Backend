@@ -20,6 +20,8 @@ namespace api.Models
         public string Description { get; set; } = string.Empty;
         public string AuctionImage { get; set; } = string.Empty;
         public string AuctionCategory { get; set; } = string.Empty;
+
+
         public string SellerId { get; set; }
 
         public int? WinnerId { get; set; }
@@ -45,7 +47,7 @@ namespace api.Models
         public IdentityUser Seller { get; set; } // Reference to the user
 
 
-        public List<Bid> Bids { get; set; }
+
 
 
 

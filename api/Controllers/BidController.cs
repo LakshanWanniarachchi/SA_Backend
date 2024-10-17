@@ -49,7 +49,6 @@ namespace api.Controllers
                 AuctionId = dto.AuctionId,
                 BidAmount = dto.BidAmount,
                 BidderId = user.Id,
-                Status = dto.Status,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };

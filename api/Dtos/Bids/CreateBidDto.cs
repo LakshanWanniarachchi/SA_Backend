@@ -12,7 +12,6 @@ namespace api.Dtos.Bids
 
         public int AuctionId { get; set; }
 
-        public string Status { get; set; } = string.Empty;
 
         public decimal BidAmount { get; set; }
 
