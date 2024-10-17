@@ -43,6 +43,8 @@ namespace api.Service.BackgroundTasks
                         .Where(a => a.EndTime <= currentTime && a.Status != "Complete")
                         .ToListAsync();
 
+
+
                     // Log the number of auctions found
                     Console.WriteLine($"Expired Auctions Found: {expiredAuctions.Count}");
 
@@ -52,11 +54,14 @@ namespace api.Service.BackgroundTasks
                         auction.Status = "Complete";
                         auction.UpdatedAt = DateTime.UtcNow;
 
+
+                        string email = context.Users.Where(u => u.Id == auction.SellerId).Select(u => u.Email).FirstOrDefault();
+
                         string message = "Seller Message";
 
-                        Console.WriteLine(auction.Seller.Email);
+                        Console.WriteLine(email);
 
-                        await _mailService.SendTestEmailAsync(auction.AuctionId.ToString(), auction.Seller.Email, message);
+                        await _mailService.SendTestEmailAsync(auction.AuctionId.ToString(), email, message);
                     }
 
                     if (expiredAuctions.Any())
