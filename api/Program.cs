@@ -45,7 +45,7 @@ builder.Services.AddSingleton<MailService>();
 builder.Services.AddHostedService<AuctionBackgroundService>();
 
 // Register PaymentService with its interface
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<PaymentService>();
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 

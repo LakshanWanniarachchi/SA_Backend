@@ -24,7 +24,8 @@ public class Payment
     public string PaymentStatus { get; set; } = string.Empty;  // e.g., "Pending", "Completed"
 
     [StringLength(255)]
-    public string TransactionId { get; set; } = string.Empty;  // Stripe's PaymentIntentId
+    public string TransactionId { get; set; } = "Pending";  // Placeholder value
+
 
     public DateTime CreatedAt { get; private set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;

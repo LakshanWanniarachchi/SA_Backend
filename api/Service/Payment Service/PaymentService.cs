@@ -4,14 +4,14 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-public class PaymentService : IPaymentService
+public class PaymentService
 {
     private readonly string _secretKey;
 
     public PaymentService(IConfiguration configuration)
     {
-        _secretKey = configuration["Stripe:SecretKey"];
-        StripeConfiguration.ApiKey = _secretKey;
+        // _secretKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = "sk_test_51Q9R1Z2KhZ1sCuSZPtPjXnRkgO9cjLZ4vEaSrqOfhl3sNt5Ia43qh0F6VHtNzj9nSwonksHd5Q9RlqMj5c7hqFOl00zzBlIYbG";
     }
 
     public async Task<Session> CreateCheckoutSession(decimal amount, string currency = "usd", int auctionId = 0)
@@ -25,7 +25,7 @@ public class PaymentService : IPaymentService
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)(amount * 100),
+                        UnitAmount = (long)(amount*100),  // Convert decimal amount to cents
                         Currency = currency,
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
