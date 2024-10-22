@@ -83,6 +83,7 @@ public class AuctionController : ControllerBase
             Description = dto.Description,
             AuctionImage = dto.AuctionImage,
             AuctionCategory = dto.AuctionCategory,
+            StartingBid = dto.StartingBid,
             SellerId = user.Id,  // Assuming SellerId is an integer
             EndTime = dto.EndTime,
             Status = dto.Status

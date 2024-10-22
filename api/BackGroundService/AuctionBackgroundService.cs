@@ -15,10 +15,14 @@ namespace api.Service.BackgroundTasks
         private readonly IServiceProvider _serviceProvider;
         private readonly MailService _mailService;
 
+
+
         public AuctionBackgroundService(IServiceProvider serviceProvider, MailService mailService)
         {
             _serviceProvider = serviceProvider;
             _mailService = mailService;
+
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -51,17 +55,25 @@ namespace api.Service.BackgroundTasks
                     foreach (var auction in expiredAuctions)
                     {
                         Console.WriteLine($"Processing Auction: {auction.AuctionId}");
+
+                        var winingbid = context.Bids
+                       .Where(b => b.AuctionId == auction.AuctionId)
+                       .OrderByDescending(b => b.CreatedAt)
+                       .FirstOrDefault();
+
                         auction.Status = "Complete";
                         auction.UpdatedAt = DateTime.UtcNow;
+                        auction.WinningBid = winingbid.BidAmount;
 
 
-                        string email = context.Users.Where(u => u.Id == auction.SellerId).Select(u => u.Email).FirstOrDefault();
+                        string? email = context.Users.Where(u => u.Id == auction.SellerId).Select(u => u.Email).FirstOrDefault();
+                        string? username = context.Users.Where(u => u.Id == auction.SellerId).Select(u => u.Name).FirstOrDefault();
 
-                        string message = "Seller Message";
+                        await _mailService.SendAuctionCompleteEmailAsync(username, email, winingbid.BidAmount, auction.Title, auction.AuctionId);
 
                         Console.WriteLine(email);
 
-                        await _mailService.SendTestEmailAsync(auction.AuctionId.ToString(), email, message);
+
                     }
 
                     if (expiredAuctions.Any())

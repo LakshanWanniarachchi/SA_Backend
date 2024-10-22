@@ -35,27 +35,40 @@ namespace api.Controllers
         }
 
         [HttpPost("create"), Authorize]
-
         public async Task<IActionResult> CreateBid([FromBody] CreateBidDto dto)
         {
+            // Get the user making the bid
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var user = await _userManager.FindByIdAsync(userId);
 
+            if (user == null)
+                return NotFound("User not found");
 
-            if (_context.Auctions.Find(dto.AuctionId).Status == "Complete")
+            // Retrieve the auction
+            var auction = await _context.Auctions.FindAsync(dto.AuctionId);
+
+            if (auction == null)
+                return NotFound("Auction not found");
+
+            // Check if auction is already completed
+            if (auction.Status == "Complete")
                 return Ok("Auction is already complete");
 
+            // Retrieve the last bid for the auction
             var lastBid = _context.Bids
                 .Where(b => b.AuctionId == dto.AuctionId)
                 .OrderByDescending(b => b.CreatedAt)
                 .FirstOrDefault();
 
+            // Ensure that the new bid is greater than the starting bid (if no previous bids exist)
+            if (lastBid == null && dto.BidAmount <= auction.StartingBid)
+                return BadRequest("Bid amount must be greater than the starting bid");
+
+            // Ensure that the new bid is greater than the last bid
             if (lastBid != null && dto.BidAmount <= lastBid.BidAmount)
-                return Ok("Bid amount must be greater than the last bid");
+                return BadRequest("Bid amount must be greater than the last bid");
 
-            if (user == null)
-                return NotFound("User not found");
-
+            // Create a new bid
             var bid = new Bid
             {
                 AuctionId = dto.AuctionId,
