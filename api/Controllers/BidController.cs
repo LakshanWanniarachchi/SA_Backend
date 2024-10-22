@@ -41,6 +41,18 @@ namespace api.Controllers
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var user = await _userManager.FindByIdAsync(userId);
 
+
+            if (_context.Auctions.Find(dto.AuctionId).Status == "Complete")
+                return Ok("Auction is already complete");
+
+            var lastBid = _context.Bids
+                .Where(b => b.AuctionId == dto.AuctionId)
+                .OrderByDescending(b => b.CreatedAt)
+                .FirstOrDefault();
+
+            if (lastBid != null && dto.BidAmount <= lastBid.BidAmount)
+                return Ok("Bid amount must be greater than the last bid");
+
             if (user == null)
                 return NotFound("User not found");
 

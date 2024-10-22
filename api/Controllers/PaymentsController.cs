@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 [Route("api/payments")]
 [ApiController]
@@ -8,16 +10,20 @@ public class PaymentsController : ControllerBase
 {
     private readonly PaymentService _paymentService;
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public PaymentsController(PaymentService paymentService, ApplicationDbContext context)
+    public PaymentsController(PaymentService paymentService, ApplicationDbContext context , UserManager<IdentityUser> userManager)
     {
         _paymentService = paymentService;
         _context = context;
+        _userManager = userManager;
     }
 
-    [HttpPost("create-checkout-session/{auctionId}/{buyerId}")]
-    public async Task<IActionResult> CreateCheckoutSession(int auctionId, string buyerId)
+    [HttpPost("create-checkout-session/{auctionId}"), Authorize]
+    public async Task<IActionResult> CreateCheckoutSession(int auctionId)
     {
+
+        var buyerId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         var auction = await _context.Auctions.FindAsync(auctionId);
 
         decimal amount = _context.Bids.Where(b => b.AuctionId == auctionId).Max(b => b.BidAmount);

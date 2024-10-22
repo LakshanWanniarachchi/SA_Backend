@@ -58,5 +58,37 @@ namespace api.Controllers
                 Email = user.Email
             });
         }
+
+
+
+
+[HttpPost("register")]
+public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+{
+    if (ModelState.IsValid)
+    {
+        var user = new ApplicationUser
+        {
+            UserName = registerDTO.Email,
+            Email = registerDTO.Email,
+            Name = registerDTO.Name,  // Storing the Name
+            Address = registerDTO.Address // Storing the Address
+        };
+
+        var result = await _userManager.CreateAsync(user, registerDTO.Password);
+
+        if (result.Succeeded)
+        {
+            return Ok(new { message = "User registered successfully" });
+        }
+        else
+        {
+            return BadRequest(result.Errors);
+        }
+    }
+
+    return BadRequest("Invalid data");
+}
+
     }
 }
