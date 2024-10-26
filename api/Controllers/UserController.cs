@@ -62,33 +62,34 @@ namespace api.Controllers
 
 
 
-[HttpPost("register")]
-public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
-{
-    if (ModelState.IsValid)
-    {
-        var user = new ApplicationUser
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
         {
-            UserName = registerDTO.Email,
-            Email = registerDTO.Email,
-            Name = registerDTO.Name,  // Storing the Name
-            Address = registerDTO.Address // Storing the Address
-        };
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = registerDTO.Email,
+                    Email = registerDTO.Email,
+                    Name = registerDTO.Name,  // Storing the Name
+                    Address = registerDTO.Address, // Storing the Address
+                    mobileNumber = registerDTO.mobileNumber // Storing the Phone Number
+                };
 
-        var result = await _userManager.CreateAsync(user, registerDTO.Password);
+                var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-        if (result.Succeeded)
-        {
-            return Ok(new { message = "User registered successfully" });
+                if (result.Succeeded)
+                {
+                    return Ok(new { message = "User registered successfully" });
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
+            }
+
+            return BadRequest("Invalid data");
         }
-        else
-        {
-            return BadRequest(result.Errors);
-        }
-    }
-
-    return BadRequest("Invalid data");
-}
 
     }
 }
