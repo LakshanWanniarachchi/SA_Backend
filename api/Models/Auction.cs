@@ -16,10 +16,14 @@ namespace api.Models
         public int AuctionId { get; set; }
 
         [StringLength(255)]
-        public string Title { get; set; } = string.Empty;
+        public string Brand { get; set; } = string.Empty;
+
+        public string Year { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string AuctionImage { get; set; } = string.Empty;
-        public string AuctionCategory { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+
+        public int Mileage { get; set; } = 0;
 
 
         public string SellerId { get; set; }
@@ -37,7 +41,7 @@ namespace api.Models
         public decimal? WinningBid { get; set; }
 
         [StringLength(100)]
-        public string? Status { get; set; } = string.Empty;
+        public string? Status { get; set; } = "Pending";
 
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;

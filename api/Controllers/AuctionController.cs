@@ -23,7 +23,7 @@ public class AuctionController : ControllerBase
     }
 
 
-    [HttpGet, Authorize]
+    [HttpGet]
     public async Task<IActionResult> GetAuctions()
     {
         var currentTime = DateTime.UtcNow;
@@ -40,6 +40,8 @@ public class AuctionController : ControllerBase
             auction.UpdatedAt = DateTime.UtcNow;
         }
 
+
+
         if (expiredAuctions.Any())
         {
             // Save the changes to the database only if any auctions were updated
@@ -52,9 +54,12 @@ public class AuctionController : ControllerBase
             .Select(a => new
             {
                 a.AuctionId,
-                a.Title,
+                a.Brand,
                 a.Description,
-                a.AuctionCategory,
+                a.Model,
+                a.Mileage,
+                a.StartingBid,
+                a.AuctionImage,
                 a.StartTime,
                 a.EndTime,
                 a.Status,
@@ -79,14 +84,16 @@ public class AuctionController : ControllerBase
 
         var auction = new Auction
         {
-            Title = dto.Title,
+            Brand = dto.Brand,
             Description = dto.Description,
             AuctionImage = dto.AuctionImage,
-            AuctionCategory = dto.AuctionCategory,
+            Year = dto.Year,
+            Model = dto.Model,
+            Mileage = dto.Mileage,
             StartingBid = dto.StartingBid,
             SellerId = user.Id,  // Assuming SellerId is an integer
             EndTime = dto.EndTime,
-            Status = dto.Status
+
         };
 
         _context.Auctions.Add(auction);
@@ -94,6 +101,95 @@ public class AuctionController : ControllerBase
 
         return Ok(auction);
     }
+
+
+    [HttpDelete("delete/{auctionId}"), Authorize]
+    public async Task<IActionResult> DeleteAuction(int auctionId)
+    {
+
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+            return Unauthorized("User not found");
+
+
+
+        var auction = await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId && a.SellerId == userId);
+
+
+
+        if (auction == null)
+            return NotFound("Auction not found");
+
+        _context.Auctions.Remove(auction);
+        await _context.SaveChangesAsync();
+
+        return Ok("Auction deleted successfully");
+    }
+
+
+    [HttpGet("/GetUserAuctions"), Authorize]
+    public async Task<IActionResult> GetUserAuctions()
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+            return Unauthorized("User not found");
+
+        var auctions = await _context.Auctions
+            .Where(a => a.SellerId == userId)
+            .Include(c => c.Seller)
+            .Select(a => new
+            {
+                a.AuctionId,
+                a.Brand,
+                a.Description,
+                a.Model,
+                a.Mileage,
+                a.StartingBid,
+                a.AuctionImage,
+                a.StartTime,
+                a.EndTime,
+                a.Status,
+                a.WinningBid,
+                a.SellerId,
+                SellerName = a.Seller.UserName,
+                TimeRemaining = a.EndTime - DateTime.UtcNow
+            }).ToListAsync();
+
+        return Ok(auctions);
+    }
+
+    [HttpPut("update/{auctionId}"), Authorize]
+    public async Task<IActionResult> UpdateAuction(int auctionId, [FromBody] UpdateAuctionDto dto)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+            return Unauthorized("User not found");
+
+        var auction = await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId && a.SellerId == userId);
+
+        if (auction == null)
+            return NotFound("Auction not found");
+
+        auction.Brand = dto.Brand;
+        auction.Description = dto.Description;
+        auction.AuctionImage = dto.AuctionImage;
+        auction.Year = dto.Year;
+        auction.Model = dto.Model;
+        auction.Mileage = dto.Mileage;
+        auction.StartingBid = dto.StartingBid;
+        auction.EndTime = dto.EndTime;
+        auction.UpdatedAt = DateTime.UtcNow;
+
+        _context.Auctions.Update(auction);
+        await _context.SaveChangesAsync();
+
+        return Ok(auction);
+    }
+
+
 
 
 

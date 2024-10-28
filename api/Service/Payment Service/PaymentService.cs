@@ -37,8 +37,8 @@ public class PaymentService
                 },
             },
             Mode = "payment",
-            SuccessUrl = "https://yourwebsite.com/success?sessionId={CHECKOUT_SESSION_ID}",
-            CancelUrl = "https://yourwebsite.com/cancel",
+            SuccessUrl = "http://localhost:5175//success?sessionId={CHECKOUT_SESSION_ID}",
+            CancelUrl = "http://localhost:5175//cancel",
         };
 
         var service = new SessionService();

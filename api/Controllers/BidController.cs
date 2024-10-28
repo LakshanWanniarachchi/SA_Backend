@@ -84,6 +84,33 @@ namespace api.Controllers
             return Ok(bid);
         }
 
+
+
+        [HttpGet("max-bid/{auctionId}"), Authorize]
+        public IActionResult GetMaxBid(int auctionId)
+        {
+            var maxBid = _context.Bids
+            .Where(b => b.AuctionId == auctionId)
+            .OrderByDescending(b => b.BidAmount)
+            .FirstOrDefault();
+
+            if (maxBid == null)
+                return NotFound("No bids found for this auction");
+
+            return Ok(maxBid.BidAmount);
+        }
+
+
+
+
+
+
+
+
     }
+
+
+
+
 
 }

@@ -63,13 +63,18 @@ namespace api.Service.BackgroundTasks
 
                         auction.Status = "Complete";
                         auction.UpdatedAt = DateTime.UtcNow;
+
+                        if (winingbid == null)
+                        {
+                            continue;
+                        }
                         auction.WinningBid = winingbid.BidAmount;
 
 
                         string? email = context.Users.Where(u => u.Id == auction.SellerId).Select(u => u.Email).FirstOrDefault();
                         string? username = context.Users.Where(u => u.Id == auction.SellerId).Select(u => u.Name).FirstOrDefault();
 
-                        await _mailService.SendAuctionCompleteEmailAsync(username, email, winingbid.BidAmount, auction.Title, auction.AuctionId);
+                        await _mailService.SendAuctionCompleteEmailAsync(username, email, winingbid.BidAmount, auction.Brand, auction.AuctionId);
 
                         Console.WriteLine(email);
 

@@ -12,7 +12,7 @@ public class PaymentsController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public PaymentsController(PaymentService paymentService, ApplicationDbContext context , UserManager<IdentityUser> userManager)
+    public PaymentsController(PaymentService paymentService, ApplicationDbContext context, UserManager<IdentityUser> userManager)
     {
         _paymentService = paymentService;
         _context = context;
