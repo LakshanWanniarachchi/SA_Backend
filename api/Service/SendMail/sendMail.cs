@@ -48,6 +48,7 @@ namespace api.Service.SendMail
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
+
         public async Task SendBidderPaymentEmailAsync(string reciverName, string reciverEmail, string url, string auctionTitle)
         {
             try
@@ -61,8 +62,11 @@ namespace api.Service.SendMail
                 string emailTemplate = _templates.BidderPaymentMail(reciverName, url, auctionTitle);
 
                 // Attach the HTML body to the email message
-                var builder = new BodyBuilder { HtmlBody = emailTemplate };
-                message.Body = builder.ToMessageBody();
+                var builder = new BodyBuilder
+                {
+                    HtmlBody = emailTemplate // Set HTML body
+                };
+                message.Body = builder.ToMessageBody(); // Assign the builder's output to the message body
 
                 // Initialize SmtpClient and connect to Gmail SMTP
                 using (var client = new SmtpClient())
@@ -85,6 +89,7 @@ namespace api.Service.SendMail
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
+
 
         public Task SendTestEmailAsync(string reciverName, string reciverEmail, string reciverMessage)
         {

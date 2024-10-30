@@ -28,7 +28,8 @@ public class AuctionController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAuctions()
     {
-        var currentTime = DateTime.UtcNow;
+        var sriLankanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Sri Lanka Standard Time");
+        var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, sriLankanTimeZone);
 
         // Fetch all auctions that have expired but are still not marked as "Complete"
         var expiredAuctions = await _context.Auctions
