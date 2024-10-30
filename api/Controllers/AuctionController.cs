@@ -1,3 +1,4 @@
+using api.Builder_Design_Pattern.AuctionBuilderDesingPattern;
 using api.Data;
 using api.Dtos.Auction;
 using api.Models;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SA_Backend.api.Builder_Design_Pattern.AuctionBuilderDesingPattern;
 
 
 
@@ -66,7 +68,15 @@ public class AuctionController : ControllerBase
                 a.WinningBid,
                 a.SellerId,
                 SellerName = a.Seller.UserName,
-                TimeRemaining = a.EndTime - currentTime
+                TimeRemaining = a.EndTime - currentTime,
+
+                CurrentBid = _context.Bids
+                .Where(b => b.AuctionId == a.AuctionId)
+                .OrderByDescending(b => b.BidAmount)
+                .Select(b => (decimal?)b.BidAmount)
+                .FirstOrDefault() ?? a.StartingBid
+
+
             }).ToListAsync();
 
         return Ok(auctions);
@@ -81,6 +91,10 @@ public class AuctionController : ControllerBase
 
         if (user == null)
             return NotFound("User not found");
+
+
+
+        // Vehical auction = new Director(new Car()).construct(dto , user.Id);
 
         var auction = new Auction
         {
@@ -190,6 +204,42 @@ public class AuctionController : ControllerBase
     }
 
 
+
+    [HttpGet("{auctionId}")]
+    public async Task<IActionResult> GetAuctionById(int auctionId)
+    {
+        var auction = await _context.Auctions
+            .Include(a => a.Seller)
+            .Where(a => a.AuctionId == auctionId)
+            .Select(a => new
+            {
+                a.AuctionId,
+                a.Brand,
+                a.Description,
+                a.Model,
+                a.Mileage,
+                a.StartingBid,
+                a.AuctionImage,
+                a.StartTime,
+                a.EndTime,
+                a.Status,
+                a.WinningBid,
+                a.SellerId,
+                SellerName = a.Seller.UserName,
+                TimeRemaining = a.EndTime - DateTime.UtcNow,
+                CurrentBid = _context.Bids
+                    .Where(b => b.AuctionId == a.AuctionId)
+                    .OrderByDescending(b => b.BidAmount)
+                    .Select(b => (decimal?)b.BidAmount)
+                    .FirstOrDefault() ?? a.StartingBid
+            })
+            .FirstOrDefaultAsync();
+
+        if (auction == null)
+            return NotFound("Auction not found");
+
+        return Ok(auction);
+    }
 
 
 

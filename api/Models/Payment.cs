@@ -21,10 +21,10 @@ public class Payment
     public string PaymentMethod { get; set; } = string.Empty;  // e.g., "Stripe"
 
     [StringLength(50)]
-    public string PaymentStatus { get; set; } = string.Empty;  // e.g., "Pending", "Completed"
+    public string PaymentStatus { get; set; } = "Pending";  // e.g., "Pending", "Completed"
 
     [StringLength(255)]
-    public string TransactionId { get; set; } = "Pending";  // Placeholder value
+    public string TransactionId { get; set; } = string.Empty;  // Placeholder value
 
 
     public DateTime CreatedAt { get; private set; } = DateTime.Now;
