@@ -24,7 +24,7 @@ namespace api.Controllers
         }
 
         // Get a list of all users (protected by [Authorize] attribute)
-        [HttpGet, Authorize]
+        [HttpGet]
         public IActionResult GetUsers()
         {
             return Ok(_context.Users.ToList());
